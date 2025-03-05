@@ -6752,26 +6752,20 @@ html.rd-navbar-fixed-linked .page {
 		padding: 80px 0;
 	}
 }
-.blog-container {
-	height: auto;
-	margin: 0 auto;
-	position: relative;
-	overflow: hidden;
-	/* Fix of Webkit flickering */
-	z-index: 1;
-}
-.blog-slide {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 100%;
-    min-height: calc(100vh - 50px);
+.photo_album-section {
     padding: 50px 0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed; 
-    white-space: nowrap;
+    text-align: center;
 }
+
+.photo_album-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.photo_album:hover {
+    transform: scale(1.05);
+}
+

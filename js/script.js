@@ -1166,3 +1166,28 @@
 		}
 	});
 }());
+document.addEventListener("DOMContentLoaded", function () {
+    let galleryContainer = document.getElementById("photo_album-1");
+    if (!galleryContainer) return; // 確保 `photo-gallery-1` 存在
+
+    let albumPath = "photo_album/2025.01.18"; // 直接定義相簿路徑
+    let totalPhotos = 102; // 設定載入照片數量（避免過多加載）
+
+    for (let i = 0; i < totalPhotos; i++) {
+        let imgPath = `${albumPath}/LINE_ALBUM_2025118尾牙_250305_${i}.jpg`;
+
+        let imgElement = document.createElement("img");
+        imgElement.src = imgPath;
+        imgElement.alt = `活動照片 ${i}`;
+        imgElement.classList.add("gallery-img");
+
+        let imgWrapper = document.createElement("div");
+        imgWrapper.classList.add("col-md-4", "col-sm-6");
+        imgWrapper.appendChild(imgElement);
+
+        galleryContainer.appendChild(imgWrapper);
+    }
+});
+
+
+
