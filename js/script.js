@@ -1173,8 +1173,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let albumPath = "photo_album/2025.01.18"; // 直接定義相簿路徑
     let totalPhotos = 102; // 設定載入照片數量（避免過多加載）
 
-    for (let i = 0; i < totalPhotos; i++) {
-        let imgPath = `${albumPath}/LINE_ALBUM_2025118尾牙_250305_${i}.jpg`;
+    for (let i = 1; i < totalPhotos; i++) {
+        let imgPath = `${albumPath}/Year-end_Party-${i}.jpg`;
 
         let imgElement = document.createElement("img");
         imgElement.src = imgPath;
