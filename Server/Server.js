@@ -1,9 +1,9 @@
 // 🔹 引入所需的模組
-const fs = require("fs");             // 讀取檔案系統
-const path = require("path");         // 處理路徑
-const mysql = require("mysql2");      // 連接 MySQL
-const express = require("express");   // 建立 Web 伺服器
-const cors = require("cors");         // 允許跨來源請求
+const fs = require("fs");
+const path = require("path");
+const mysql = require("mysql2");
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const port = 3000;
@@ -18,7 +18,7 @@ app.use("/photo_album", express.static(path.join(__dirname, "photo_album")));
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "@Edwin0927", // 你的 MySQL 密碼
+    password: "@Edwin0927", // ⚠️ 請更換為你的 MySQL 密碼
     database: "photo_album"
 });
 
@@ -28,7 +28,7 @@ db.connect(err => {
         return;
     }
     console.log("✅ 成功連接 MySQL！");
-    scanAndCreateTables();  // 啟動時自動掃描並建立資料表
+    scanAndCreateTables();
 });
 
 // 📂 **🔹 掃描 `photo_album/` 內的所有相簿**
@@ -55,7 +55,7 @@ function scanAndCreateTables() {
 
 // 🔹 **為每個相簿創建 MySQL 資料表**
 function createAlbumTable(album) {
-    const tableName = `photos_${album.replace(/\W/g, "_")}`; // 避免 SQL 不允許的字元
+    const tableName = `${album.replace(/\W/g, "_")}`; // 避免 SQL 不允許的字元
 
     const sql = `
         CREATE TABLE IF NOT EXISTS ${tableName} (
@@ -81,7 +81,7 @@ function createAlbumTable(album) {
 function scanAndInsertImages(album) {
     const albumPath = path.join(__dirname, `../photo_album/${album}`);
 
-    const tableName = `photos_${album.replace(/\W/g, "_")}`;
+    const tableName = `${album.replace(/\W/g, "_")}`;
     const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
     fs.readdir(albumPath, (err, files) => {
@@ -116,23 +116,83 @@ function scanAndInsertImages(album) {
     });
 }
 
-// 🔹 **API：獲取特定相簿的圖片**
-app.get("/api/photos/:album", (req, res) => {
-    const albumName = req.params.album.replace(/\W/g, "_");  // 確保表格名稱安全
-    const tableName = `photos_${albumName}`;
-    const sql = `SELECT filename, file_path FROM ${tableName}`;
+app.get("/api/photos/:album/count", (req, res) => {
+    try {
+        const albumName = req.params.album.replace(/\W/g, "_");
+        const tableName = `${albumName}`;
 
-    db.query(sql, (err, results) => {
-        if (err) {
-            res.status(500).json({ error: "資料庫錯誤" });
-        } else {
-            // 確保 `file_path` 是完整網址
+        console.log(`🔍 查詢相簿 ${tableName} 的圖片數量`);
+
+        // 確認表格是否存在
+        const checkTableSQL = `SHOW TABLES LIKE ?`;
+        db.query(checkTableSQL, [tableName], (err, results) => {
+            if (err) {
+                console.error(`❌ 檢查表格 ${tableName} 失敗:`, err);
+                return res.status(500).json({ error: "資料庫錯誤", details: err.message });
+            }
+
+            if (results.length === 0) {
+                console.warn(`⚠️ 相簿 ${tableName} 不存在`);
+                return res.status(404).json({ error: "相簿不存在" });
+            }
+
+            // 查詢圖片數量
+            const sql = `SELECT COUNT(*) AS total FROM \`${tableName}\``;
+            db.query(sql, (err, results) => {
+                if (err) {
+                    console.error(`❌ 查詢 ${tableName} 內的圖片數量失敗:`, err);
+                    return res.status(500).json({ error: "資料庫錯誤", details: err.message });
+                }
+
+                console.log(`✅ ${tableName} 內有 ${results[0].total} 張圖片`);
+                res.json({ total: results[0].total });
+            });
+        });
+    } catch (error) {
+        console.error("❌ 伺服器錯誤:", error);
+        res.status(500).json({ error: "伺服器錯誤", details: error.message });
+    }
+});
+
+app.get("/api/photos/:album/image", (req, res) => {
+    try {
+        const albumName = req.params.album.replace(/\W/g, "_");
+        const tableName = `${albumName}`;
+
+        console.log(`📸 查詢相簿 ${tableName} 內的圖片`);
+
+        const sql = `SELECT filename, file_path FROM \`${tableName}\``;
+        db.query(sql, (err, results) => {
+            if (err) {
+                console.error(`❌ 查詢 ${tableName} 內的圖片失敗:`, err);
+                return res.status(500).json({ error: "資料庫錯誤", details: err.message });
+            }
+
+            if (!results || results.length === 0) {
+                console.warn(`⚠️ 相簿 ${tableName} 沒有圖片`);
+                return res.status(404).json({ error: "相簿內沒有圖片" });
+            }
+
             results.forEach(photo => {
                 photo.file_path = `http://localhost:${port}/${photo.file_path}`;
             });
+
+            console.log(`✅ ${tableName} 內的圖片查詢成功，共 ${results.length} 張圖片`);
             res.json(results);
-        }
-    });
+        });
+    } catch (error) {
+        console.error("❌ 伺服器錯誤:", error);
+        res.status(500).json({ error: "伺服器錯誤", details: error.message });
+    }
+});
+
+// 📂 **🔹 讓前端檔案可以透過 Express 提供**
+const frontendPath = path.join(__dirname, "../");
+app.use(express.static(frontendPath));
+
+// 讓 `/` 預設開啟 `blog-1.html`
+app.get("/", (req, res) => {
+    res.sendFile(path.join(frontendPath, "blog-1.html"));
 });
 
 // 🔹 **啟動伺服器**

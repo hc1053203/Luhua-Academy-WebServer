@@ -1166,28 +1166,57 @@
 		}
 	});
 }());
+
 document.addEventListener("DOMContentLoaded", function () {
     let galleryContainer = document.getElementById("photo_album-1");
-    if (!galleryContainer) return; // 確保 `photo-gallery-1` 存在
+    if (!galleryContainer) return;
 
-    let albumPath = "photo_album/2025.01.18"; // 直接定義相簿路徑
-    let totalPhotos = 102; // 設定載入照片數量（避免過多加載）
+    let albumName = "2025_01_18"; // 設定要載入的相簿名稱
 
-    for (let i = 1; i < totalPhotos; i++) {
-        let imgPath = `${albumPath}/Year-end_Party-${i}.jpg`;
+    // 先請求 API 取得該相簿的圖片總數
+    fetch(`/api/photos/2025_01_18/count`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(countData => {
+            console.log("📷 相簿圖片總數:", countData.total);
 
-        let imgElement = document.createElement("img");
-        imgElement.src = imgPath;
-        imgElement.alt = `活動照片 ${i}`;
-        imgElement.classList.add("gallery-img");
-
-        let imgWrapper = document.createElement("div");
-        imgWrapper.classList.add("col-md-4", "col-sm-6");
-        imgWrapper.appendChild(imgElement);
-
-        galleryContainer.appendChild(imgWrapper);
-    }
+            // 如果相簿內有圖片，則載入圖片
+            if (countData.total > 0) {
+                loadAlbumPhotos(albumName);
+            } else {
+                console.warn("⚠️ 這個相簿沒有圖片");
+            }
+        })
+        .catch(error => console.error("❌ 無法獲取相簿圖片數量:", error));
 });
 
+// 函式：載入所有相簿圖片
+function loadAlbumPhotos(albumName) {
+    fetch(`/api/photos/2025_01_18/image`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            let galleryContainer = document.getElementById("photo_album-1");
+            galleryContainer.innerHTML = ""; // 先清空相簿，避免重複加載
 
+            data.forEach(photo => {
+                let imgElement = document.createElement("img");
+                imgElement.src = photo.file_path; // API 返回的圖片路徑
+                imgElement.alt = "活動照片";
+                imgElement.classList.add("gallery-img", "col-md-4", "mb-3");
 
+                let imgWrapper = document.createElement("div");
+                imgWrapper.classList.add("col-md-4", "col-sm-6");
+                imgWrapper.appendChild(imgElement);
+
+                galleryContainer.appendChild(imgWrapper);
+            });
+
+            console.log(`✅ 已成功載入 ${data.length} 張圖片`);
+        })
+        .catch(error => console.error("❌ 圖片載入失敗:", error));
+}
