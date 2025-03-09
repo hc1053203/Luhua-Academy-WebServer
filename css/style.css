@@ -151,7 +151,7 @@ html a:hover {
 
 @media (min-width: 1200px) {
 	.box-bordered {
-		padding: 30px;
+		padding: 30%;
 	}
 }
 
@@ -2400,7 +2400,7 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 .lg-outer .lg-thumb-item img {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 }
 
 .lg-outer.lg-has-thumb .lg-item {
@@ -6767,5 +6767,38 @@ html.rd-navbar-fixed-linked .page {
 
 .photo_album:hover {
     transform: scale(1.05);
+}
+
+#photo_album-1 {
+    display: flex; /* 讓圖片能自動排列 */
+    flex-wrap: wrap; /* 允許換行 */
+    gap: 10px; /* 圖片間距 */
+    justify-content: center; /* 置中顯示 */
+}
+
+#photo_album-1 img {
+    width: 30%; /* 預設佔30%寬度 */
+    height: 250px; /* 固定高度 */
+    object-fit: cover; /* 讓圖片填滿但不變形 */
+    border-radius: 8px; /* 圓角 */
+    transition: transform 0.3s ease-in-out; /* 滑鼠懸停放大 */
+}
+
+#photo_album-1 img:hover {
+    transform: scale(1.05);
+}
+
+.photo_album-xl {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.photo_album-xl img {
+    width: 100%; /* 讓圖片填滿 */
+    height: auto; /* 保持比例 */
+    object-fit: contain; /* 🚀 讓圖片完整顯示 */
 }
 

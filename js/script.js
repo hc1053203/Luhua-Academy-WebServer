@@ -1172,7 +1172,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!galleryContainer) return;
 
     let albumName = "2025_01_18"; // 設定要載入的相簿名稱
-
     // 先請求 API 取得該相簿的圖片總數
     fetch(`/api/photos/2025_01_18/count`)
         .then(response => {
@@ -1194,23 +1193,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 函式：載入所有相簿圖片
 function loadAlbumPhotos(albumName) {
-    fetch(`/api/photos/2025_01_18/image`)
+    fetch(`/api/photos/${albumName}/image`)
         .then(response => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
         .then(data => {
             let galleryContainer = document.getElementById("photo_album-1");
-            galleryContainer.innerHTML = ""; // 先清空相簿，避免重複加載
+            galleryContainer.innerHTML = ""; // 清空相簿
+
+            // 確保有 Bootstrap .row
+            if (!galleryContainer.classList.contains("row")) {
+                galleryContainer.classList.add("row");
+            }
 
             data.forEach(photo => {
                 let imgElement = document.createElement("img");
-                imgElement.src = photo.file_path; // API 返回的圖片路徑
+                imgElement.src = photo.file_path;
                 imgElement.alt = "活動照片";
-                imgElement.classList.add("gallery-img", "col-md-4", "mb-3");
+                imgElement.classList.add("w-100", "rounded"); // 🚀 讓圖片填滿但不裁切
 
+                // 圖片包裹 div
                 let imgWrapper = document.createElement("div");
-                imgWrapper.classList.add("col-md-4", "col-sm-6");
+                imgWrapper.classList.add("col-6", "col-md-4", "col-lg-3", "mb-3", "photo_album-xl");
                 imgWrapper.appendChild(imgElement);
 
                 galleryContainer.appendChild(imgWrapper);
