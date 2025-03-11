@@ -1166,62 +1166,131 @@
 		}
 	});
 }());
+"use strict";
 
-document.addEventListener("DOMContentLoaded", function () {
-    let galleryContainer = document.getElementById("photo_album-1");
-    if (!galleryContainer) return;
+document.addEventListener("DOMContentLoaded", async function () {
+    console.log("📌 DOM 內容已載入");
 
-    let albumName = "2025_01_18"; // 設定要載入的相簿名稱
-    // 先請求 API 取得該相簿的圖片總數
-    fetch(`/api/photos/2025_01_18/count`)
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        })
-        .then(countData => {
-            console.log("📷 相簿圖片總數:", countData.total);
+    const albumSection = document.querySelector(".photo_album-section");
+    if (!albumSection) return;
 
-            // 如果相簿內有圖片，則載入圖片
-            if (countData.total > 0) {
-                loadAlbumPhotos(albumName);
-            } else {
-                console.warn("⚠️ 這個相簿沒有圖片");
-            }
-        })
-        .catch(error => console.error("❌ 無法獲取相簿圖片數量:", error));
+    const albumName = albumSection.getAttribute("data-album");
+    if (!albumName) {
+        console.warn("⚠️ 沒有指定相簿名稱，無法載入相簿圖片");
+        return;
+    }
+
+    console.log(`📷 載入相簿: ${albumName}`);
+    await loadAlbumPhotos(albumName);
+    await loadMainPhotos();
+    await loadSwiperPhotos();
 });
 
-// 函式：載入所有相簿圖片
-function loadAlbumPhotos(albumName) {
-    fetch(`/api/photos/${albumName}/image`)
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            let galleryContainer = document.getElementById("photo_album-1");
-            galleryContainer.innerHTML = ""; // 清空相簿
+// 🔹 **載入所有相簿圖片**
+async function loadAlbumPhotos(albumName) {
+    try {
+        const response = await fetch(`/api/photos/${albumName}/image`);
+        if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+        const data = await response.json();
 
-            // 確保有 Bootstrap .row
-            if (!galleryContainer.classList.contains("row")) {
-                galleryContainer.classList.add("row");
+        if (!data.length) {
+            console.warn("⚠️ 這個相簿沒有圖片");
+            return;
+        }
+
+        const galleryContainer = document.getElementById("photo_album-1");
+        if (!galleryContainer) return;
+
+        galleryContainer.innerHTML = ""; // 清空內容
+        const fragment = document.createDocumentFragment();
+
+        data.forEach(photo => {
+            const imgElement = document.createElement("img");
+            imgElement.src = photo.file_path;
+            imgElement.alt = "活動照片";
+            imgElement.classList.add("w-100", "rounded");
+
+            const imgWrapper = document.createElement("div");
+            imgWrapper.classList.add("col-6", "col-md-4", "col-lg-3", "mb-3", "photo_album-xl");
+            imgWrapper.appendChild(imgElement);
+
+            fragment.appendChild(imgWrapper);
+        });
+
+        galleryContainer.appendChild(fragment);
+        console.log(`✅ 已成功載入 ${data.length} 張圖片`);
+    } catch (error) {
+        console.error("❌ 圖片載入失敗:", error);
+    }
+}
+
+// 🔹 **載入主要圖片（主圖 & Swiper 封面）**
+async function loadMainPhotos() {
+    const photoSections = document.querySelectorAll(".photo");
+
+    for (const photoSection of photoSections) {
+        const albumName = photoSection.getAttribute("data-album");
+        const photoName = photoSection.getAttribute("data-photo");
+
+        if (!albumName || !photoName) {
+            console.warn("⚠️ 缺少相簿名稱或圖片名稱");
+            continue;
+        }
+
+        console.log(`📷 嘗試載入主圖: ${albumName}/${photoName}`);
+        try {
+            const response = await fetch(`/api/photos/${albumName}/photo/${photoName}`);
+            if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+            const photoData = await response.json();
+
+            const imgElement = photoSection.querySelector("img");
+            if (imgElement) {
+                imgElement.src = photoData.file_path;
+                console.log("✅ 主要圖片載入成功:", photoData.file_path);
+            } else {
+                console.error("❌ 找不到 <img> 標籤，無法設定 src");
             }
+        } catch (error) {
+            console.error("❌ 主要圖片載入失敗:", error);
+        }
+    }
+}
 
-            data.forEach(photo => {
-                let imgElement = document.createElement("img");
-                imgElement.src = photo.file_path;
-                imgElement.alt = "活動照片";
-                imgElement.classList.add("w-100", "rounded"); // 🚀 讓圖片填滿但不裁切
+// 🔹 **載入 Swiper 圖片**
+async function loadSwiperPhotos() {
+    const swiperSlides = document.querySelectorAll(".swiper-slide[data-album][data-photo]");
+    const fetchPromises = [];
 
-                // 圖片包裹 div
-                let imgWrapper = document.createElement("div");
-                imgWrapper.classList.add("col-6", "col-md-4", "col-lg-3", "mb-3", "photo_album-xl");
-                imgWrapper.appendChild(imgElement);
+    for (const slide of swiperSlides) {
+        const album = slide.getAttribute("data-album");
+        const photo = slide.getAttribute("data-photo");
 
-                galleryContainer.appendChild(imgWrapper);
-            });
+        if (!album || !photo) {
+            console.warn("⚠️ Swiper 內缺少相簿名稱或圖片名稱");
+            continue;
+        }
 
-            console.log(`✅ 已成功載入 ${data.length} 張圖片`);
-        })
-        .catch(error => console.error("❌ 圖片載入失敗:", error));
+        console.log(`📷 Swiper 嘗試載入: ${album}/${photo}`);
+
+        fetchPromises.push(
+            fetch(`/api/photos/${album}/photo/${photo}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+                    return response.json();
+                })
+                .then(photoData => {
+                    if (photoData.file_path) {
+                        slide.style.backgroundImage = `url('${photoData.file_path}')`;
+                        slide.style.backgroundSize = "cover";
+                        slide.style.backgroundPosition = "center";
+                        console.log("✅ Swiper 圖片載入成功:", photoData.file_path);
+                    } else {
+                        console.error("❌ API 回應沒有圖片路徑");
+                    }
+                })
+                .catch(error => console.error("❌ Swiper 圖片載入失敗:", error))
+        );
+    }
+
+    await Promise.all(fetchPromises);
 }

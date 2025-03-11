@@ -6802,3 +6802,10 @@ html.rd-navbar-fixed-linked .page {
     object-fit: contain; /* 🚀 讓圖片完整顯示 */
 }
 
+.swiper-img {
+    width: 100%; 
+    height: auto;
+    object-fit: cover; /* 確保圖片填滿容器但不變形 */
+    display: block; /* 避免 inline 元素影響排版 */
+}
+

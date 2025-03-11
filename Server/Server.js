@@ -185,6 +185,25 @@ app.get("/api/photos/:album/image", (req, res) => {
         res.status(500).json({ error: "伺服器錯誤", details: error.message });
     }
 });
+app.get('/api/photos/:album/photo/:photo', (req, res) => {
+    const { album, photo } = req.params;
+    const tableName = album.replace(/\W/g, "_");
+
+    const sql = `SELECT file_path FROM \`${tableName}\` WHERE filename LIKE ? LIMIT 1`;
+    db.query(sql, [`${photo}%`], (err, results) => {
+        if (err) {
+            console.error(`❌ MySQL 查詢錯誤:`, err);
+            return res.status(500).json({ error: "資料庫錯誤" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "圖片不存在" });
+        }
+
+        res.json({ file_path: `http://localhost:${port}/${results[0].file_path}` });
+    });
+});
+
 
 // 📂 **🔹 讓前端檔案可以透過 Express 提供**
 const frontendPath = path.join(__dirname, "../");
@@ -192,7 +211,7 @@ app.use(express.static(frontendPath));
 
 // 讓 `/` 預設開啟 `blog-1.html`
 app.get("/", (req, res) => {
-    res.sendFile(path.join(frontendPath, "blog-1.html"));
+    res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // 🔹 **啟動伺服器**
