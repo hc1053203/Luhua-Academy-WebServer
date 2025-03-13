@@ -1206,7 +1206,7 @@ async function loadAlbumPhotos(albumName) {
 
         data.forEach(photo => {
             const imgElement = document.createElement("img");
-            imgElement.src = photo.file_path;
+            imgElement.src = photo.filePath;
             imgElement.alt = "活動照片";
             imgElement.classList.add("w-100", "rounded");
 
