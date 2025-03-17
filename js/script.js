@@ -1171,20 +1171,21 @@
 document.addEventListener("DOMContentLoaded", async function () {
     console.log("📌 DOM 內容已載入");
 
+    // 不應該阻止 Swiper 載入
     const albumSection = document.querySelector(".photo_album-section");
-    if (!albumSection) return;
-
-    const albumName = albumSection.getAttribute("data-album");
-    if (!albumName) {
-        console.warn("⚠️ 沒有指定相簿名稱，無法載入相簿圖片");
-        return;
+    if (albumSection) {
+        const albumName = albumSection.getAttribute("data-album");
+        if (albumName) {
+            console.log(`📷 載入相簿: ${albumName}`);
+            await loadAlbumPhotos(albumName);
+        }
     }
-
-    console.log(`📷 載入相簿: ${albumName}`);
-    await loadAlbumPhotos(albumName);
+    
+    // 即使沒有 photo_album-section 也要載入 Swiper
     await loadMainPhotos();
     await loadSwiperPhotos();
 });
+
 
 // 🔹 **載入所有相簿圖片**
 async function loadAlbumPhotos(albumName) {

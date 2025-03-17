@@ -6435,6 +6435,7 @@ html.rd-navbar-fixed-linked .page {
 * --------------------------------------------------
 */
 .swiper-container {
+	width:100%;
 	height: auto;
 	margin: 0 auto;
 	position: relative;
@@ -6704,6 +6705,9 @@ html.rd-navbar-fixed-linked .page {
 }
 
 .swiper-slide {
+	background-size: contain !important; /* 讓背景圖片縮小適應容器 */
+    background-repeat: no-repeat;
+    background-position: center;
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -6716,6 +6720,7 @@ html.rd-navbar-fixed-linked .page {
 	background-repeat: no-repeat;
 	white-space: nowrap;
 	min-height: 100vh;
+	object-fit: contain;
 }
 
 .swiper-slide-caption {

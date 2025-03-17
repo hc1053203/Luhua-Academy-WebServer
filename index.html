@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel 讓我們可以使用 JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>.ie-panel { display: none; background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3); clear: both; text-align: center; position: relative; z-index: 1; } html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel { display: block; }</style>
   </head>
   <body>
@@ -104,45 +109,11 @@
             </nav>
           </div>
         </header>
-        <!--header.section.page-header
-        #stuck_container.stuck_container
-          h1.brand
-            a(href='./') Happy kids
-          nav.nav
-            ul.sf-menu(data-type='navbar')
-              li.active
-                a(href='./') Home
-              li
-                a(href='index-1.html') About us
-                ul
-                  li
-                    a(href='#') Lorem ipsum dolor
-                  li
-                    a(href='#') Conse ctetur
-                  li
-                    a(href='#') Elit sed do eiusmod
-                    ul
-                      li
-                        a(href='#') Lorem ipsum
-                      li
-                        a(href='#') Conse adipisicing
-                      li
-                        a(href='#') Sit amet dolore
-                  li
-                    a(href='#') Incididunt ut labore
-                  li
-                    a(href='#') Et dolore magna
-              li
-                a(href='index-2.html') News
-              li
-                a(href='index-3.html') Gallery
-              li
-                a(href='index-4.html') Contact
-        -->
+      
         <!-- Swiper-->
         <div class="section swiper-container swiper-slider swiper-slider-1" data-loop="true" data-autoplay="5000" data-simulate-touch="false">
           <div class="swiper-wrapper text-center">
-            <div class="swiper-slide context-dark" data-slide-bg="images/1.jpg">
+            <div class="swiper-slide context-dark" data-album="Data" data-photo="1">
               <div class="swiper-slide-caption section-md">
                 <div class="container">
                   <div class="row row-fix justify-content-center">
