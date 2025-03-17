@@ -12,7 +12,7 @@ const port = 3000;
 app.use(cors());
 
 // 讓 `photo_album/` 內的圖片可以透過 `http://localhost:3000/photo_album/...` 存取
-app.use("/ImageData", express.static(path.join(__dirname, "ImageData")));
+app.use("/photo_album", express.static(path.join(__dirname, "photo_album")));
 
 // 執行掃描
 scanAndCreateTables();
@@ -75,11 +75,10 @@ function scanAndCreateTables() {
 // 創建表格
 function createAlbumTable(album) {
     const sql = `
-        CREATE TABLE IF NOT EXISTS \'${album} (
+        CREATE TABLE ?? (
             id INT AUTO_INCREMENT PRIMARY KEY,
             filename VARCHAR(255) NOT NULL,
-            image_path VARCHAR(500) NOT NULL,
-            filesize INT DEFAULT 0,
+            filePath VARCHAR(500) NOT NULL,
             uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `;
@@ -133,9 +132,9 @@ function syncDatabaseWithLocalFiles(album, albumPath) {
             if (missingDbFiles.length > 0) {
                 console.log("⚠️ 缺少資料庫檔案（即將新增至資料庫）:", missingDbFiles);
 
-                const insertData = missingDbFiles.map(file => [file, fs.statSync(path.join(albumPath, file)).size]);
+                const insertData = missingDbFiles.map(file => [file, `/ImageData/${album}/${file}`]);
 
-                const sql = `INSERT INTO \`${album}\` (filename, image_path, filesize) VALUES ?`;
+                const sql = `INSERT INTO ?? (filename, filePath) VALUES ?`;
                 db.query(sql, [album, insertData], (err, result) => {
                     if (err) {
                         console.error(`❌ 插入資料失敗:`, err);
@@ -195,7 +194,7 @@ app.get("/api/photos/:album/image", (req, res) => {
 
         console.log(`📸 查詢相簿 ${tableName} 內的圖片`);
 
-        const sql = `SELECT filename, image_path FROM \`${tableName}\``;
+        const sql = `SELECT filename, filePath FROM \`${tableName}\``;
         db.query(sql, (err, results) => {
             if (err) {
                 console.error(`❌ 查詢 ${tableName} 內的圖片失敗:`, err);
@@ -223,7 +222,7 @@ app.get('/api/photos/:album/photo/:photo', (req, res) => {
     const { album, photo } = req.params;
     const tableName = album.replace(/\W/g, "_");
 
-    const sql = `SELECT file_path FROM \`${tableName}\` WHERE filename LIKE ? LIMIT 1`;
+    const sql = `SELECT filePath FROM \`${tableName}\` WHERE filename LIKE ? LIMIT 1`;
     db.query(sql, [`${photo}%`], (err, results) => {
         if (err) {
             console.error(`❌ MySQL 查詢錯誤:`, err);
@@ -234,7 +233,7 @@ app.get('/api/photos/:album/photo/:photo', (req, res) => {
             return res.status(404).json({ error: "圖片不存在" });
         }
 
-        res.json({ file_path: `http://localhost:${port}/${results[0].file_path}` });
+        res.json({ file_path: `http://localhost:${port}/${results[0].filePath}` });
     });
 });
 
@@ -245,7 +244,7 @@ app.use(express.static(frontendPath));
 
 // 讓 `/` 預設開啟 `blog-1.html`
 app.get("/", (req, res) => {
-    res.sendFile(path.join(frontendPath, "blog-4.html"));
+    res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // 🔹 **啟動伺服器**

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300%7CRoboto+Condensed:400,700,300">
+    <style>
+        .ie-panel { display: none; background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3); text-align: center; }
+        html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- Internet Explorer 提示 -->
+<div class="ie-panel">
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/">
+        <div class="photo" data-alvum="Data" data-photo="warning_bar_0000_us"><img src="" height="42" width="820"></div>
+    </a>
+</div>
+
+<!-- 頁面加載動效 -->
+<div class="preloader">
+    <div class="preloader-body">
+        <div class="cssload-container">
+            <div class="cssload-speeding-wheel"></div>
+        </div>
+        <p>Loading...</p>
+    </div>
+</div>
+
+<!-- 主頁面 -->
+<div class="page">
+    <header class="section page-header rd-navbar-absolute">
+        <nav class="rd-navbar rd-navbar-transparent" data-layout="rd-navbar-fixed">
+            <div class="rd-navbar-main-outer">
+                <div class="rd-navbar-main">
+                    <div class="rd-navbar-panel">
+                        <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                        <div class="rd-navbar-brand">
+                            <a class="brand" href="index.html">
+                                <div class="photo" data-album="Data" data-photo="logo-default-482x134" width="482" height="134"><img src=""></div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="rd-navbar-main-element">
+                        <div class="rd-navbar-nav-wrap">
+                            <ul class="rd-navbar-nav">
+                                <li class="rd-nav-item active"><a class="rd-nav-link" href="index.html">首頁</a></li>
+                                <li class="rd-nav-item"><a class="rd-nav-link" href="about-us.html">關於我們</a></li>
+                                <li class="rd-nav-item">
+                                    <a class="rd-nav-link" href="news.html">課程資訊</a>
+                                    <ul class="rd-menu rd-navbar-dropdown">
+                                        <li><a href="class-1.html">失落之寶-不朽的智慧</a></li>
+                                        <li><a href="class-2.html">心繪流轉:纏繞畫靜心藝術</a></li>
+                                        <li><a href="class-3.html">推推樂</a></li>
+                                    </ul>
+                                </li>
+                                <li class="rd-nav-item">
+                                    <a class="rd-nav-link" href="#">活動回顧</a>
+                                    <ul class="rd-menu rd-navbar-dropdown">
+                                        <li><a href="blog-4.html">尾牙活動</a></li>
+                                        <li><a href="blog-2.html">Gallery</a></li>
+                                        <li><a href="blog-3.html">404</a></li>
+                                        <li><a href="blog-5.html">Privacy policy</a></li>
+                                    </ul>
+                                </li>
+                                <li class="rd-nav-item"><a class="rd-nav-link" href="contact-us.html">經典古籍</a></li>
+                                <li class="rd-nav-item"><a class="rd-nav-link" href="#">會員登入</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="section swiper-container swiper-slider swiper-slider-1" data-loop="true" data-autoplay="5000" data-simulate-touch="false">
+        <div class="swiper-wrapper text-center">
+          <div class="swiper-slide context-dark" data-album="Data" data-photo="1">
+            <div class="swiper-slide-caption section-md">
+              <div class="container">
+                <div class="row row-fix justify-content-center">
+                  <div class="col-md-11 col-lg-9 col-xxl-8">
+                    <h2 data-caption-animate="fadeInUp" data-caption-delay="100">Our Teaching</h2>
+                    <hr>
+                    <h4 class="lead" data-caption-animate="fadeInUp" data-caption-delay="250">Providing quality teaching for children of any age.</h4>
+                    <div class="button-group" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button button-default button-lg" href="about-us.html">Read more</a><a class="button button-2 button-lg" href="#">Join us</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+    <!-- Swiper 輪播 
+    <div class="swiper-container swiper-slider">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" data-album="Data" data-photo="1"></div>
+                <div class="container">
+                    <h2>Our Teaching</h2>
+                    <hr>
+                    <h4>Providing quality teaching for children of any age.</h4>
+                    <a class="button button-default" href="about-us.html">Read more</a>
+                    <a class="button button-2" href="#">Join us</a>
+                </div>
+            </div>
+            <div class="swiper-slide" data-album="Data" data-photo="1"></div>
+                <div class="container">
+                    <a class="button button-default" href="about-us.html">Read more</a>
+                    <a class="button button-2" href="#">Join us</a>
+                </div>
+            </div>
+            <div class="swiper-slide" data-album="Data" data-photo="1"></div>
+                <div class="container">
+                    <h2>Our Mission</h2>
+                    <hr>
+                    <h4>Emphasizing individual growth for children by promoting a caring environment.</h4>
+                    <a class="button button-default" href="about-us.html">Read more</a>
+                    <a class="button button-2" href="#">Join us</a>
+                </div>
+            </div>
+        </div>-->
+        <!-- Swiper 按鈕 -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+    <section class="novi-section"></section>
+      <section class="well-4 bg-default novi-background bg-cover">
+        <div class="container">
+            <div class="row row-30 offset-custom-2">
+              <div class="col-sm-4 photo" data-album="Data" data-photo="1"><img src="" alt="" width="1280" height="960"/>
+            </div>
+            <div class="col-sm-8">
+              <h3>崇正基金會-盧華書苑</h3>
+              <p>
+                盧華書院致力於傳承中華文化，透過經典研讀、才藝培育與文化交流，為學習者提供一個涵養身心、提升素養的空間。我們開設 經典研讀、推拿、纏繞畫 等課程，讓藝術與文化融入日常，並透過講座與活動，探索經典智慧在現代生活中的價值。<br><br>
+
+                我們相信，學習不僅是知識的累積，更是品德與心靈的成長。誠摯邀請您加入我們，在文化的世界裡，尋找內在的寧靜與智慧。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+</div>
+
+<!-- 加載 Swiper 相關 JS -->
+<script src="js/core.min.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>
